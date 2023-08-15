@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-family: Roboto;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  transition: all 0.2s;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #181c1f;
+}
+
+.basic-theme {
+  @apply bg-[#181C1F] text-[#E2E3E7];
+}
+.theme-border {
+  @apply border-2 border-[#40474D];
+}
+
+.animateing-container {
+  overflow: hidden;
+}
+
+.animateing-box {
+  width: 50px;
+  height: 500px;
+  background: -webkit-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.25)
+  );
+  transform: rotate(45deg);
+  position: absolute;
+  left: -120px;
+  animation-name: animate;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-play-state: linear;
+}
+
+@keyframes animate {
+  100% {
+    left: 220px;
+  }
+}
