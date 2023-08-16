@@ -36,8 +36,8 @@ const Todoapp = () => {
 
   return (
     <div className="w-full min-h-screen flex justify-center basic-theme items-center flex-col relative ">
-      <Controlbar reverseAction={reverseTodos} />
-      <Todos todos={todos} isLoading={isLoading} error={error} />
+      <Controlbar state="todos" reverseAction={reverseTodos} />
+      <Todos route="todos" todos={todos} isLoading={isLoading} error={error} />
       <Addtodo />
     </div>
   );

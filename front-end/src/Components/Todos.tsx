@@ -13,9 +13,10 @@ interface propsType {
   isLoading: boolean;
   todos: todoType[];
   error: string;
+  route: string;
 }
 
-const Todos = ({ isLoading, todos, error }: propsType) => {
+const Todos = ({ isLoading, todos, route, error }: propsType) => {
   return (
     <div className="w-full bg-[#181C1F] min-h-screen flex items-center flex-col relative p-2">
       <div>{isLoading && <Loading />}</div>
@@ -27,6 +28,7 @@ const Todos = ({ isLoading, todos, error }: propsType) => {
               title={todo.title}
               description={todo.description}
               id={todo.id}
+              route={route}
               lastUpdated={todo.lastUpdated}
             />
           );

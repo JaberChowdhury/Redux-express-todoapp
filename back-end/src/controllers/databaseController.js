@@ -1,7 +1,7 @@
 const fs = require("fs").promises;
 
 const fileName =
-  "/data/data/com.termux/files/home/code/Express/src/db/todos.txt";
+  "/data/data/com.termux/files/home/code/Redux-express-todoapp/back-end/src/db/todos.txt";
 
 class databaseController {
   constructor(path = fileName) {
@@ -118,6 +118,70 @@ class databaseController {
           return each.id === id;
         });
         return this.outputMaker(true, "item found", specificItem[0]);
+      } else {
+        return this.outputMaker(false, `uuid ${id} doesn't exist`);
+      }
+    };
+
+    this.getDeletedItem = async (id) => {
+      const rawDatabase = await this.readDB();
+      const database = await JSON.parse(rawDatabase);
+      const result = await this.findDuplicate(database.deletedTodos, id);
+      if (result.success === true) {
+        const specificItem = database.deletedTodos.filter((each) => {
+          return each.id === id;
+        });
+        return this.outputMaker(true, "item found", specificItem[0]);
+      } else {
+        return this.outputMaker(false, `uuid ${id} doesn't exist`);
+      }
+    };
+
+    this.deleteDeletedItem = async (id) => {
+      const rawDatabase = await this.readDB();
+      const database = await JSON.parse(rawDatabase);
+      const result = await this.findDuplicate(database.deletedTodos, id);
+      if (result.success === true) {
+        try {
+          const filtered = database.deletedTodos.filter((each) => {
+            return each.id !== id;
+          });
+          database.deletedTodos = filtered;
+          const writeResult = await fs.writeFile(
+            this.path,
+            JSON.stringify(database),
+          );
+          return this.outputMaker(true, "item successfully deleted");
+        } catch (e) {
+          return this.outputMaker(false, "can't write the database", e);
+        }
+      } else {
+        return this.outputMaker(false, `uuid ${id} doesn't exist`);
+      }
+    };
+
+    this.recoverDeletedItem = async (id) => {
+      const rawDatabase = await this.readDB();
+      const database = await JSON.parse(rawDatabase);
+      const result = await this.findDuplicate(database.deletedTodos, id);
+      if (result.success === true) {
+        try {
+          const filtered = database.deletedTodos.filter((each) => {
+            return each.id === id;
+          });
+          const withoutItem = database.deletedTodos.filter((each) => {
+            return each.id !== id;
+          });
+          database.deletedTodos = withoutItem;
+          database.todos = [...database.todos, ...filtered];
+          const writeResult = await fs.writeFile(
+            this.path,
+            JSON.stringify(database),
+          );
+          return this.outputMaker(true, "item successfully recovered");
+        } catch (e) {
+          return this.outputMaker(false, "can't write the database", e);
+        }
       } else {
         return this.outputMaker(false, `uuid ${id} doesn't exist`);
       }

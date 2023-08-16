@@ -6,16 +6,18 @@ interface propsType {
   description: string;
   id: string;
   lastUpdated: string;
+  route: string;
 }
 
 export default function Todo({
   title,
   description,
   id,
+  route,
   lastUpdated,
 }: propsType) {
   return (
-    <Link className="w-[45%] " to={`/todoapp/todos/${id}`}>
+    <Link className="w-[45%] " to={`/todoapp/${route}/${id}`}>
       <motion.div
         initial={{
           scale: 0.85,

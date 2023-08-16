@@ -3,6 +3,7 @@ import {
   GET_TODOS_SUCCESS,
   GET_TODOS_FAILD,
   REVERSE_TODOS,
+  REVERSE_DELETED_TODOS,
   GET_DELETED_TODOS_REQUEST,
   GET_DELETED_TODOS_SUCCESS,
   GET_DELETED_TODOS_FAILD,
@@ -74,6 +75,12 @@ const todosReducer = (state = initialState, action: actionType) => {
       return {
         ...state,
         todos: state.todos.reverse(),
+      };
+
+    case REVERSE_DELETED_TODOS:
+      return {
+        ...state,
+        deletedTodos: state.deletedTodos.reverse(),
       };
 
     case GET_DELETED_TODOS_REQUEST:

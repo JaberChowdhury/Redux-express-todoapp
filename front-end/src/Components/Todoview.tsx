@@ -4,7 +4,16 @@ import { useState, useEffect } from "react";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 
-const Todoview = () => {
+interface propsType {
+  route: string;
+  apis: {
+    fetchApi: string;
+    deleteApi: string;
+    postApi: string;
+  };
+}
+
+const Todoview = ({ route, apis }: propsType) => {
   const [todo, setTodo] = useState({
     title: "",
     description: "",
@@ -18,11 +27,9 @@ const Todoview = () => {
   const { id } = useParams();
   const { title, description, checked, lastUpdated } = todo;
 
-  const url = "http://localhost:5174/api/v1/todos";
-
   const fetchData = () => {
     axios
-      .get(`${url}/get/${id}`)
+      .get(`${apis.fetchApi}/${id}`)
       .then((res) => {
         const data = res.data;
         setTodo({
@@ -39,7 +46,6 @@ const Todoview = () => {
         console.log(error.message);
       });
   };
-
   const pushData = () => {
     const dataForPost = {
       ...todo,
@@ -47,7 +53,7 @@ const Todoview = () => {
       lastUpdated: new Date().toLocaleString(),
     };
     axios
-      .patch(`${url}/update`, dataForPost)
+      .patch(`${apis.postApi}`, dataForPost)
       .then((res) => {
         console.log(res.data);
         fetchData();
@@ -56,10 +62,20 @@ const Todoview = () => {
         console.log(error.message);
       });
   };
-
   const deleteTodo = () => {
     axios
-      .delete(`${url}/delete/${id}`)
+      .delete(`${apis.deleteApi}/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        fetchData();
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
+  const recoverTodo = () => {
+    axios
+      .delete(`http://localhost:5174/api/v1/deletedtodos/recover/${id}`)
       .then((res) => {
         console.log(res.data);
         fetchData();
@@ -125,6 +141,7 @@ const Todoview = () => {
             onChange={handleTitle}
             className="w-full rounded p-2 m-2 my-1 theme-border basic-theme"
             value={title}
+            readOnly={route === "get" ? false : true}
           />
           <textarea
             id="description"
@@ -132,6 +149,7 @@ const Todoview = () => {
             onChange={handleDescreption}
             className="w-full min-h-[100px] rounded p-2 m-2 my-1 theme-border basic-theme"
             value={description}
+            readOnly={route === "get" ? false : true}
           />
 
           <div
@@ -139,13 +157,18 @@ const Todoview = () => {
             className="w-full rounded p-2 m-2 my-1 theme-border flex justify-between  items-centerbasic-theme"
           >
             <div>{checked === true ? "Checked" : "Unchecked"}</div>
-            <input
-              id="checked"
-              name="checked"
-              onChange={handleCheckedChange}
-              type="checkbox"
-              checked={checked === true ? true : false}
-            />
+            {route === "get" ? (
+              <input
+                id="checked"
+                name="checked"
+                onChange={handleCheckedChange}
+                type="checkbox"
+                checked={checked === true ? true : false}
+                readOnly={route === "get" ? false : true}
+              />
+            ) : (
+              ""
+            )}
           </div>
 
           <div className="w-full text-xs rounded p-2 m-2 my-1 theme-border">
@@ -155,26 +178,52 @@ const Todoview = () => {
             ID : {id}
           </div>
           <div className="w-full text-xs p-1 rounded my-1 flex justify-around items-center">
-            <Link to="/todoapp">
+            <Link to={`/todoapp/${route === "get" ? "todos" : "deletedTodos"}`}>
               <Button
                 handleClick={() => {
                   deleteTodo();
                 }}
                 className="basic-theme theme-border p-2 px-4"
               >
-                Delete
+                {route === "get" ? "Delete" : "Delete permanently"}
               </Button>
             </Link>
-            <Button
-              handleClick={() => {
-                pushData();
-              }}
-              className="basic-theme theme-border p-2 px-4"
-            >
-              Save
-            </Button>
+            {route === "get" ? (
+              <Button
+                handleClick={() => {
+                  pushData();
+                }}
+                className="basic-theme theme-border p-2 px-4"
+              >
+                Save
+              </Button>
+            ) : (
+              ""
+            )}
+            {route !== "get" ? (
+              <Link
+                to={`/todoapp/${route === "get" ? "todos" : "deletedTodos"}`}
+              >
+                <Button
+                  handleClick={() => {
+                    recoverTodo();
+                  }}
+                  className="basic-theme theme-border p-2 px-4"
+                >
+                  Recover Todo
+                </Button>
+              </Link>
+            ) : (
+              ""
+            )}
           </div>
         </div>
+        <Link
+          to={`/todoapp/${route === "get" ? "todos" : "deletedTodos"}`}
+          className="theme-border basic-theme p-2 rounded px-4 mt-10"
+        >
+          Go back
+        </Link>
       </div>
     </>
   );

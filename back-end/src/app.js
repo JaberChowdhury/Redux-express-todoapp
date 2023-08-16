@@ -5,6 +5,7 @@ const createError = require("http-errors");
 const xssClean = require("xss-clean");
 const expressRateLimit = require("express-rate-limit");
 const todosRouter = require("./routers/todosRouter");
+const deletedTodosRouter = require("./routers/deletedTodosRouter");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(xssClean());
 app.use(rateLimit);
 
 app.use("/api/v1/todos", todosRouter);
+app.use("/api/v1/deletedTodos", deletedTodosRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({

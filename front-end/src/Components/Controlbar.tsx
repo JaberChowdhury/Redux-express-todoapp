@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { ChangeCircle } from "@mui/icons-material";
+import { NavLink } from "react-router-dom";
 
 interface todoType {
   title: string;
@@ -22,9 +23,10 @@ interface actionType {
 
 interface propsType {
   reverseAction: () => actionType;
+  state: string;
 }
 
-const Controlbar = ({ reverseAction }: propsType) => {
+const Controlbar = ({ reverseAction, state }: propsType) => {
   const dispatch = useDispatch();
 
   const handleReverse = () => {
@@ -33,10 +35,28 @@ const Controlbar = ({ reverseAction }: propsType) => {
 
   return (
     <div className="basic-theme theme-border w-[90%] p-2 flex justify-center items-center relative rounded my-2">
+      <NavLink to="/" className="basic-theme px-2 active:text-teal-400">
+        Home
+      </NavLink>
       <div className="basic-theme px-2" onClick={handleReverse}>
         <ChangeCircle />
         Reverse
       </div>
+      {state === "todos" ? (
+        <NavLink
+          to="/TodoApp/Deletedtodos"
+          className="basic-theme px-2 active:text-teal-400"
+        >
+          Deletedtodos
+        </NavLink>
+      ) : (
+        <NavLink
+          to="/TodoApp/todos"
+          className="basic-theme px-2 active:text-teal-400"
+        >
+          Todos
+        </NavLink>
+      )}
     </div>
   );
 };
