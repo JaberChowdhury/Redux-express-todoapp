@@ -1,7 +1,7 @@
 const fs = require("fs").promises;
+const path = require("path");
 
-const fileName =
-  "/data/data/com.termux/files/home/code/Redux-express-todoapp/back-end/src/db/todos.txt";
+const fileName = path.join(__dirname, "..", "db", "todos.txt");
 
 class databaseController {
   constructor(path = fileName) {
